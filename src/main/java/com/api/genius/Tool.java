@@ -28,19 +28,28 @@ public class Tool {
         final HttpURLConnection request = (HttpURLConnection) url.openConnection();
         request.connect();
 
-        // Conversor para Json
-        final JsonParser jp = new JsonParser();
-        final JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
-        final JsonObject jsonobj = root.getAsJsonObject();
-        final JsonObject response = (JsonObject) jsonobj.get("response");
-        final JsonArray hits = (JsonArray) response.get("hits");
+        try {
+            // Conversor para Json
+            final JsonParser jp = new JsonParser();
+            final JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
+            final JsonObject jsonobj = root.getAsJsonObject();
+            final JsonObject response = (JsonObject) jsonobj.get("response");
+            final JsonArray hits = (JsonArray) response.get("hits");
 
-        for (int i = 0; i < 10; i++) {
-            final JsonObject highlights = (JsonObject) hits.get(i);
-            final JsonObject result = (JsonObject) highlights.get("result");
-            final JsonPrimitive full_title = (JsonPrimitive) result.get("full_title");
+            for (int i = 0; i < 10; i++) {
+                final JsonObject highlights = (JsonObject) hits.get(i);
+                final JsonObject result = (JsonObject) highlights.get("result");
+                final JsonPrimitive full_title = (JsonPrimitive) result.get("full_title");
 
-            musicList.add(full_title.toString());
+                musicList.add(full_title.toString());
+            }
+
+        } catch (final Exception e) {
+            return null;
+        }
+
+        if (musicList.size() <= 0) {
+            return null;
         }
 
         return musicList;
